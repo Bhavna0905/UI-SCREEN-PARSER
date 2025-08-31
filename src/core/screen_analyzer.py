@@ -5,7 +5,30 @@ import json
 import numpy as np
 
 # Ensure proper path resolution
-current_dir = os.path.dirname(os.path.abspath(_file_))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.dirname(current_dir)
+if src_dir not in sys.path:
+    sys.path.insert(0, src_dir)
+
+# Import custom modules
+from models.ui_component import UIComponent
+from models.spatial_relationship import SpatialRelationship, UILayout
+from core.component_detector import ComponentDetector
+from core.relationship_mapper import RelationshipMapper
+from utils.query_handler import QueryHandler
+
+
+
+
+
+from typing import List, Dict, Optional, Any, Union
+import sys
+import os
+import json
+import numpy as np
+
+# Add the src directory to Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
 src_dir = os.path.dirname(current_dir)
 if src_dir not in sys.path:
     sys.path.insert(0, src_dir)
@@ -36,22 +59,29 @@ class ScreenAnalyzer:
     def analyze_screen(self, image_path: str) -> UILayout:
         """Main method to analyze a screen and return structured output"""
         try:
+            # Step 1: Detect UI components
             print("Detecting UI components...")
             components = self.component_detector.detect_components(image_path)
             
+            # Step 2: Map relationships
             print("Mapping relationships...")
             relationships = self.relationship_mapper.map_relationships(components)
             
+            # Step 3: Detect ambiguities
             ambiguities = self._detect_ambiguities(components, relationships)
+            
+            # Step 4: Calculate overall confidence
             confidence_score = self._calculate_confidence(components, relationships)
             
+            # Step 5: Get screen dimensions
             import cv2
             image = cv2.imread(image_path)
             if image is not None:
-                screen_dimensions = (image.shape[1], image.shape[0])
+                screen_dimensions = (image.shape[1], image.shape[0])  # width, height
             else:
                 screen_dimensions = (0, 0)
             
+            # Create component dictionary
             component_dict = {comp.id: comp for comp in components}
             
             return UILayout(
@@ -63,6 +93,7 @@ class ScreenAnalyzer:
             )
             
         except Exception as e:
+            # Return confused state
             return UILayout(
                 components={},
                 relationships=[],
@@ -80,6 +111,7 @@ class ScreenAnalyzer:
         """Detect potential ambiguities in the analysis"""
         ambiguities = []
         
+        # Check for components with very low confidence
         low_confidence_components = [
             comp for comp in components if comp.confidence < 0.5
         ]
@@ -94,7 +126,9 @@ class ScreenAnalyzer:
         if not components:
             return 0.0
         
+        # Average component confidence
         component_confidence = sum(comp.confidence for comp in components) / len(components)
+        
         return round(component_confidence, 2)
     
     @staticmethod
@@ -114,7 +148,7 @@ class ScreenAnalyzer:
             return obj
     
     def export_structured_output(self, layout: UILayout) -> Dict[str, Any]:
-        """Export the layout analysis as structured JSON"""
+        """Export the layout analysis as structured JSON with proper type conversion"""
         
         output = {
             "screen_analysis": {

@@ -3,14 +3,11 @@ from typing import List, Dict, Optional
 import sys
 import os
 
-# Ensure proper path resolution
-current_dir = os.path.dirname(os.path.abspath(_file_))
-src_dir = os.path.dirname(current_dir)
-if src_dir not in sys.path:
-    sys.path.insert(0, src_dir)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from models.spatial_relationship import UILayout, RelationType
 from models.ui_component import UIComponent, ComponentType
+
 
 class QueryHandler:
     def _init_(self):
@@ -20,8 +17,7 @@ class QueryHandler:
             'green': ['#0f0', '#00ff00', 'rgb(0', 'green'],
             'black': ['#000', '#000000', 'rgb(0,0,0)', 'black'],
             'white': ['#fff', '#ffffff', 'rgb(255,255,255)', 'white'],
-            'orange': ['#ffa500', '#ff8c00', 'orange', '#ff6600'],
-            'yellow': ['#ffff00', '#ffd700', 'yellow', '#fff200']
+            'orange': ['#ffa500', '#ff8c00', 'orange', '#ff6600']
         }
     
     def process_query(self, layout: UILayout, query: str) -> str:
@@ -29,6 +25,7 @@ class QueryHandler:
         query = query.lower().strip()
         
         try:
+            # Debug: Show what components we have
             print(f"DEBUG: Processing query '{query}' with {len(layout.components)} components")
             
             if 'how many' in query:
@@ -61,15 +58,22 @@ class QueryHandler:
     
     def _handle_location_query(self, layout: UILayout, query: str) -> str:
         """Handle queries asking about component locations"""
+        print(f"DEBUG: Handling location query: {query}")
+        
         if not layout.components:
             return "No components found in the layout"
         
         # Search for specific text content
         if 'text' in query:
+            # Extract text from query (between quotes or after "text")
             text_to_find = None
+            
+            # Look for text in quotes
             quote_match = re.search(r"'([^'])'|\"([^\"])\"", query)
             if quote_match:
                 text_to_find = quote_match.group(1) or quote_match.group(2)
+            
+            print(f"DEBUG: Looking for text: '{text_to_find}'")
             
             if text_to_find:
                 matching_components = []
@@ -81,12 +85,14 @@ class QueryHandler:
                     comp = matching_components[0]
                     return f"Found text '{text_to_find}' at position ({comp.bounding_box.x}, {comp.bounding_box.y}) in a {comp.component_type.value}"
                 else:
+                    # List all available text for debugging
                     available_texts = [comp.text_content for comp in layout.components.values() if comp.text_content]
-                    return f"Text '{text_to_find}' not found. Available texts: {available_texts[:5]}"
+                    return f"Text '{text_to_find}' not found. Available texts: {available_texts[:10]}"
         
         # Search for colors
         for color_name, patterns in self.color_patterns.items():
             if color_name in query:
+                print(f"DEBUG: Looking for color: {color_name}")
                 matching_components = []
                 
                 for comp in layout.components.values():
@@ -97,13 +103,17 @@ class QueryHandler:
                 
                 if matching_components:
                     descriptions = []
-                    for comp in matching_components[:3]:
+                    for comp in matching_components[:3]:  # Limit to 3
                         desc = f"{comp.component_type.value}"
                         if comp.text_content:
                             desc += f" with text '{comp.text_content}'"
                         desc += f" at ({comp.bounding_box.x}, {comp.bounding_box.y})"
                         descriptions.append(desc)
                     return f"Found {color_name} elements: " + "; ".join(descriptions)
+                else:
+                    # Debug: show available colors
+                    available_colors = [comp.color_info.get('dominant_hex', 'unknown') for comp in layout.components.values() if comp.color_info]
+                    return f"No {color_name} elements found. Available colors: {available_colors[:10]}"
         
         # Search for component types
         if 'button' in query:
@@ -121,7 +131,7 @@ class QueryHandler:
     def _handle_relationship_query(self, layout: UILayout, query: str) -> str:
         """Handle queries asking about relationships"""
         relationships_text = []
-        for rel in layout.relationships[:5]:
+        for rel in layout.relationships[:5]:  # Limit to first 5
             relationships_text.append(rel.description)
         
         if relationships_text:

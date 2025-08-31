@@ -1,23 +1,13 @@
 {
     "python.defaultInterpreterPath": "./venv/Scripts/python.exe",
     "python.analysis.extraPaths": [
-        "./src",
-        "./src/models",
-        "./src/core", 
-        "./src/utils"
+        "src",
+        "src/utils",
+        "src/core",
+        "src/models"
     ],
-    "python.analysis.autoSearchPaths": true,
-    "python.analysis.diagnosticMode": "workspace",
-    "python.analysis.typeCheckingMode": "basic",
     "python.analysis.autoImportCompletions": true,
     "python.analysis.diagnosticSeverityOverrides": {
-        "reportMissingImports": "information",
-        "reportUndefinedVariable": "warning"
-    },
-    "python.terminal.activateEnvironment": true,
-    "files.exclude": {
-        "/_pycache_": true,
-        "/*.pyc": true
-    },
-    "editor.formatOnSave": true
+        "reportMissingImports": "information"
+    }
 }

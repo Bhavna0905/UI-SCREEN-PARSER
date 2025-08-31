@@ -16,7 +16,22 @@
             }
         },
         {
-            "name": "Run Test",
+            "name": "Run with Query",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": [
+                "examples/sample_screens/test_image.png",
+                "how many components are there?"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            }
+        },
+        {
+            "name": "Run Test Analyzer",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/test_analyzer.py",
@@ -25,6 +40,14 @@
             "env": {
                 "PYTHONPATH": "${workspaceFolder}/src"
             }
+        },
+        {
+            "name": "Debug Current Python File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${fileDirname}"
         }
     ]
 }

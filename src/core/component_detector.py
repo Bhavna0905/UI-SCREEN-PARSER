@@ -4,13 +4,34 @@ import sys
 import os
 
 # Ensure proper path resolution
-current_dir = os.path.dirname(os.path.abspath(_file_))
+current_dir = os.path.dirname(os.path.abspath(__file__))
 src_dir = os.path.dirname(current_dir)
 if src_dir not in sys.path:
     sys.path.insert(0, src_dir)
 
+# Import custom modules
 from models.ui_component import UIComponent, ComponentType, BoundingBox
 from utils.image_processor import ImageProcessor
+
+class ComponentDetector:
+    def _init_(self):
+        self.image_processor = ImageProcessor()
+    
+    # ... rest of your methods
+
+
+
+import uuid
+from typing import List, Dict, Tuple
+import sys
+import os
+
+# Fix the path imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from models.ui_component import UIComponent, ComponentType, BoundingBox
+from utils.image_processor import ImageProcessor
+
 
 class ComponentDetector:
     def _init_(self):
@@ -36,10 +57,9 @@ class ComponentDetector:
             component = self._create_ui_component(image, element)
             components.append(component)
         
-        # Remove duplicates
+        # Remove duplicates and overlapping components
         components = self._remove_duplicates(components)
         
-        print(f"DEBUG: Created {len(components)} total components")
         return components
     
     def _create_text_component(self, image, text_region: Dict) -> UIComponent:
@@ -48,6 +68,8 @@ class ComponentDetector:
         bbox = BoundingBox(bbox_tuple[0], bbox_tuple[1], bbox_tuple[2], bbox_tuple[3])
         
         color_info = self.image_processor.extract_color_info(image, bbox_tuple)
+        
+        # Classify if it's a label or input based on context
         component_type = self._classify_text_type(text_region['text'], bbox)
         
         return UIComponent(
@@ -65,6 +87,8 @@ class ComponentDetector:
         bbox = BoundingBox(bbox_tuple[0], bbox_tuple[1], bbox_tuple[2], bbox_tuple[3])
         
         color_info = self.image_processor.extract_color_info(image, bbox_tuple)
+        
+        # Classify component type
         component_type = self._classify_component_type(element, bbox)
         
         return UIComponent(
@@ -78,9 +102,9 @@ class ComponentDetector:
     
     def _classify_text_type(self, text: str, bbox: BoundingBox) -> ComponentType:
         """Classify whether text is a label, button, or input"""
-        if bbox.width > bbox.height * 3:
+        if bbox.width > bbox.height * 3:  # Wide text likely input
             return ComponentType.TEXT_INPUT
-        elif any(word in text.lower() for word in ['click', 'submit', 'cancel', 'ok', 'sign', 'login']):
+        elif any(word in text.lower() for word in ['click', 'submit', 'cancel', 'ok']):
             return ComponentType.BUTTON
         else:
             return ComponentType.TEXT_LABEL
@@ -91,9 +115,9 @@ class ComponentDetector:
             return ComponentType.ICON if bbox.width < 50 else ComponentType.BUTTON
         elif element['type'] == 'rectangle':
             aspect_ratio = bbox.width / bbox.height
-            if aspect_ratio > 3:
+            if aspect_ratio > 3:  # Very wide rectangle
                 return ComponentType.TEXT_INPUT
-            elif 0.5 < aspect_ratio < 2:
+            elif 0.5 < aspect_ratio < 2:  # Square-ish
                 return ComponentType.BUTTON
             else:
                 return ComponentType.CONTAINER
@@ -126,6 +150,7 @@ class ComponentDetector:
         x2_min, y2_min = bbox2.x, bbox2.y
         x2_max, y2_max = bbox2.x + bbox2.width, bbox2.y + bbox2.height
         
+        # Calculate intersection
         x_overlap = max(0, min(x1_max, x2_max) - max(x1_min, x2_min))
         y_overlap = max(0, min(y1_max, y2_max) - max(y1_min, y2_min))
         
