@@ -6,9 +6,7 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
-            "args": [
-                "examples/sample_screens/test_image.png"
-            ],
+            "args": ["examples/sample_screens/test_image.png"],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "env": {
@@ -20,10 +18,7 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
-            "args": [
-                "examples/sample_screens/test_image.png",
-                "how many components are there?"
-            ],
+            "args": ["examples/sample_screens/test_image.png", "how many components are there?"],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "env": {

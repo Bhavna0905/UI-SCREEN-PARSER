@@ -14,7 +14,7 @@ from models.ui_component import UIComponent, ComponentType, BoundingBox
 from utils.image_processor import ImageProcessor
 
 class ComponentDetector:
-    def _init_(self):
+    def __init__(self):
         self.image_processor = ImageProcessor()
     
     # ... rest of your methods
@@ -34,7 +34,7 @@ from utils.image_processor import ImageProcessor
 
 
 class ComponentDetector:
-    def _init_(self):
+    def __init__(self):
         self.image_processor = ImageProcessor()
     
     def detect_components(self, image_path: str) -> List[UIComponent]:

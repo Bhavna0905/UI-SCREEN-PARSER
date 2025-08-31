@@ -3,14 +3,12 @@ from typing import List, Dict, Tuple
 import sys
 import os
 
-# Ensure proper path resolution
-current_dir = os.path.dirname(os.path.abspath(__file__))
-src_dir = os.path.dirname(current_dir)
-if src_dir not in sys.path:
-    sys.path.insert(0, src_dir)
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from models.ui_component import UIComponent
 from models.spatial_relationship import SpatialRelationship, RelationType
+
 
 class RelationshipMapper:
     def __init__(self):
@@ -28,18 +26,20 @@ class RelationshipMapper:
                     if relationship:
                         relationships.append(relationship)
         
-        print(f"DEBUG: Created {len(relationships)} relationships")
         return relationships
     
     def _analyze_relationship(self, comp1: UIComponent, comp2: UIComponent) -> SpatialRelationship:
         """Analyze relationship between two components"""
         bbox1, bbox2 = comp1.bounding_box, comp2.bounding_box
         
+        # Calculate centers
         center1 = bbox1.center
         center2 = bbox2.center
         
+        # Calculate distance
         distance = math.sqrt((center1[0] - center2[0])**2 + (center1[1] - center2[1])**2)
         
+        # Determine primary relationship
         relation_type = self._determine_relation_type(bbox1, bbox2)
         
         if relation_type:
@@ -58,12 +58,14 @@ class RelationshipMapper:
     
     def _determine_relation_type(self, bbox1, bbox2) -> RelationType:
         """Determine the primary spatial relationship"""
+        # Check directional relationships
         center1 = bbox1.center
         center2 = bbox2.center
         
         dx = center2[0] - center1[0]
         dy = center2[1] - center1[1]
         
+        # Determine primary direction
         if abs(dx) > abs(dy):
             return RelationType.RIGHT_OF if dx > 0 else RelationType.LEFT_OF
         else:
@@ -88,6 +90,6 @@ class RelationshipMapper:
         desc = component.component_type.value
         
         if component.text_content:
-            desc += f" with text '{component.text_content[:20]}...'" if len(component.text_content) > 20 else f" with text '{component.text_content}'"
+            desc += f" with text '{component.text_content}'"
         
         return desc

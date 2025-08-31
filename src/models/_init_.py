@@ -3,7 +3,7 @@
 from .ui_component import UIComponent, ComponentType, BoundingBox
 from .spatial_relationship import SpatialRelationship, RelationType, UILayout
 
-_all_ = [
+__all__ = [
     'UIComponent', 
     'ComponentType', 
     'BoundingBox',

@@ -51,7 +51,7 @@ class NumpyEncoder(json.JSONEncoder):
         return super(NumpyEncoder, self).default(obj)
 
 class ScreenAnalyzer:
-    def _init_(self):
+    def __init__(self):
         self.component_detector = ComponentDetector()
         self.relationship_mapper = RelationshipMapper()
         self.query_handler = QueryHandler()

@@ -5,7 +5,7 @@ import easyocr
 from typing import List, Tuple, Dict
 
 class ImageProcessor:
-    def _init_(self):
+    def __init__(self):
         self.ocr_reader = easyocr.Reader(['en'])
         
     def preprocess_image(self, image_path: str) -> np.ndarray:

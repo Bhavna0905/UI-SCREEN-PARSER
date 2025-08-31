@@ -3,7 +3,7 @@
     "python.analysis.extraPaths": [
         "src",
         "src/utils",
-        "src/core",
+        "src/core", 
         "src/models"
     ],
     "python.analysis.autoImportCompletions": true,

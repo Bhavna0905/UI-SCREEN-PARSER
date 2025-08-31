@@ -10,7 +10,7 @@ from models.ui_component import UIComponent, ComponentType
 
 
 class QueryHandler:
-    def _init_(self):
+    def __init__(self):
         self.color_patterns = {
             'red': ['#ff', '#f00', 'rgb(255', 'red', '#ff0000'],
             'blue': ['#00f', '#0000ff', 'rgb(0', 'blue', '#0066cc', '#4169e1'],
@@ -69,7 +69,7 @@ class QueryHandler:
             text_to_find = None
             
             # Look for text in quotes
-            quote_match = re.search(r"'([^'])'|\"([^\"])\"", query)
+            quote_match = re.search(r"'([^']*)'|\"([^\"]*)\"", query)
             if quote_match:
                 text_to_find = quote_match.group(1) or quote_match.group(2)
             

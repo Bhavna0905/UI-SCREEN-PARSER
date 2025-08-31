@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional, Tuple  # Make sure Tuple is imported
 from enum import Enum
 
 class ComponentType(Enum):
@@ -40,6 +40,6 @@ class UIComponent:
     confidence: float = 0.0
     attributes: Dict[str, any] = None
     
-    def _post_init_(self):
+    def __post_init__(self):
         if self.attributes is None:
             self.attributes = {}

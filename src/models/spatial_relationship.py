@@ -1,5 +1,8 @@
 from dataclasses import dataclass
-from typing import List, Dict, Tuple
+from typing import List, Dict
+from enum import Enum
+from dataclasses import dataclass
+from typing import List, Dict, Tuple  # Add Tuple here
 from enum import Enum
 
 class RelationType(Enum):
