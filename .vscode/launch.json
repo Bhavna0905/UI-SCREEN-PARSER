@@ -4,7 +4,8 @@
         {
             "name": "Run Screen Analyzer",
             "type": "debugpy",
-            "request": "launch",
+            
+            
             "program": "${workspaceFolder}/src/main.py",
             "args": ["examples/sample_screens/test_image.png"],
             "console": "integratedTerminal",

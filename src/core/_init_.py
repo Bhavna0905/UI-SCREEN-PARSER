@@ -6,6 +6,8 @@ from .relationship_mapper import RelationshipMapper
 
 __all__ = [
     'ScreenAnalyzer',
+
+    
     'ComponentDetector', 
     'RelationshipMapper'
 ]
