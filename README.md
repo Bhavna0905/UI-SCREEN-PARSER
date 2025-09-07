@@ -32,7 +32,7 @@ An intelligent AI-powered tool that analyzes UI screenshots and answers natural 
 ### Quick Start
 
 1. **Clone the repository:**
-git clone https://github.com/yourusername/ui-screen-parser.git
+git clone https://github.com/Bhavna0905/UI-SCREEN-PARSER.git
 
 3. **Create and activate virtual environment:**
 python -m venv venv
